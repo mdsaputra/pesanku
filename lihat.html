@@ -3,38 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lihat Jadwal Kencan 💘</title>
+  <title>Lihat Jadwal 💕</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-pink-50 min-h-screen flex flex-col items-center justify-center">
-  <div class="bg-white p-8 rounded-3xl shadow-lg w-96">
-    <h1 class="text-2xl font-bold text-pink-500 text-center mb-6">💖 Jadwal Kencan Tersimpan 💖</h1>
-    <div id="list" class="space-y-4 text-center"></div>
+<body class="bg-pink-50 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-8 rounded-2xl shadow-lg w-96 text-center">
+    <h1 class="text-2xl font-bold text-pink-500 mb-4">Jadwal Kencan 💞</h1>
+    <div id="hasil" class="text-gray-700 whitespace-pre-line text-lg"></div>
+    <p id="status" class="text-sm text-gray-400 mt-4"></p>
   </div>
 
   <script>
-    async function loadDates() {
-      const res = await fetch("/api/getDates");
-      const data = await res.json();
-      const list = document.getElementById("list");
+    async function ambilJadwal() {
+      const url = localStorage.getItem("lastBlobURL");
+      const hasil = document.getElementById("hasil");
+      const status = document.getElementById("status");
 
-      if (data.length === 0) {
-        list.innerHTML = "<p class='text-gray-500'>Belum ada jadwal tersimpan 🕊️</p>";
+      if (!url) {
+        hasil.textContent = "Belum ada jadwal tersimpan 🕊️";
         return;
       }
 
-      list.innerHTML = data.map(
-        (item, i) => `
-          <div class="p-4 bg-pink-100 rounded-xl shadow">
-            <p><b>${i + 1}.</b> ${item.activity}</p>
-            <p>${item.date} — ${item.time}</p>
-            <p class="text-sm text-gray-500">${new Date(item.createdAt).toLocaleString()}</p>
-          </div>
-        `
-      ).join("");
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        hasil.textContent = `📅 ${data.date}\n🕒 ${data.time}\n🎉 Activity: ${data.activity}`;
+        status.textContent = "Dibuat pada: " + new Date(data.createdAt).toLocaleString("id-ID");
+      } catch (err) {
+        hasil.textContent = "⚠️ Gagal mengambil data.";
+      }
     }
 
-    loadDates();
+    ambilJadwal();
   </script>
 </body>
 </html>
