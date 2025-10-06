@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>A Very Important Question</title>
+  <title>A Very Important Question 💌</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -11,183 +12,70 @@
         extend: {
           colors: {
             "primary-pink": "#FF69B4",
-            "secondary-pink": "#FFC0CB",
-            "romantic-red": "#E91E63",
-            "light-bg": "#FFF5EE",
-          },
-          fontFamily: {
-            sans: ["Inter", "sans-serif"],
-            romantic: ['"Great Vibes"', "cursive"],
+            "soft-pink": "#FFD1DC",
           },
         },
       },
     };
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Great+Vibes&display=swap" rel="stylesheet" />
-  <style>
-    body {
-      cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="%23FF69B4" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>') 15 15, auto;
-      min-height: 100vh;
-    }
-
-    .heart-trail {
-      position: absolute;
-      pointer-events: none;
-      user-select: none;
-      color: #e91e63;
-      font-size: 20px;
-      opacity: 0;
-      animation: heartFadeOut 1.5s ease-out forwards;
-      z-index: 1000;
-    }
-
-    @keyframes heartFadeOut {
-      0% { transform: translateY(0) scale(1); opacity: 1; }
-      100% { transform: translateY(-50px) scale(0.5); opacity: 0; }
-    }
-
-    #noButton { transition: all 0.05s ease-out; border-radius: 9999px; }
-
-    input[type="date"], input[type="time"] { color: #e91e63; font-weight: bold; }
-
-    .fade-enter {
-      opacity: 0;
-      transform: scale(0.9);
-    }
-
-    .fade-active {
-      opacity: 1;
-      transform: scale(1);
-      transition: opacity 0.5s ease, transform 0.5s ease;
-    }
-  </style>
 </head>
 
-<body class="bg-light-bg text-gray-800 font-sans flex items-center justify-center min-h-screen p-4">
-  <div id="app" class="max-w-xl w-full bg-white shadow-2xl rounded-3xl p-8 md:p-12 text-center border-4 border-primary-pink/50">
-    <div id="content-container" class="transition-all duration-500 ease-in-out"></div>
+<body class="bg-gradient-to-br from-soft-pink to-pink-200 flex flex-col justify-center items-center h-screen">
+
+  <!-- Step 1 -->
+  <div id="questionScreen" class="text-center transition-all">
+    <h1 class="text-4xl font-bold text-primary-pink mb-6 animate-bounce">Will you be my girlfriend? 💕</h1>
+    <div class="space-x-4">
+      <button onclick="showAcceptScreen()"
+        class="bg-primary-pink hover:bg-pink-500 text-white font-semibold px-6 py-3 rounded-full shadow-lg transition-transform hover:scale-105">Yes
+        ❤️</button>
+      <button onclick="alert('Oh no 😭 but I’ll keep trying! 💪')"
+        class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold px-6 py-3 rounded-full shadow-md transition-transform hover:scale-105">No
+        😢</button>
+    </div>
   </div>
 
-  <div id="heart-container"></div>
+  <!-- Step 2 -->
+  <div id="acceptScreen" class="hidden text-center transition-all">
+    <h2 class="text-3xl font-semibold text-pink-600 mb-6">Yay! You said yes 😍</h2>
+    <p class="text-lg text-gray-700 mb-4">Let’s set our first date 💖</p>
+
+    <div class="flex flex-col items-center space-y-4">
+      <label class="font-semibold text-pink-700">Choose the date:</label>
+      <input type="date" id="dateInput" class="border border-pink-300 rounded-lg px-3 py-2" />
+
+      <label class="font-semibold text-pink-700">Choose the time:</label>
+      <input type="time" id="timeInput" class="border border-pink-300 rounded-lg px-3 py-2" />
+
+      <label class="font-semibold text-pink-700">Pick an activity 💞:</label>
+      <div class="flex flex-wrap justify-center gap-2 mt-2">
+        <button onclick="selectActivity('Dinner Date 🍝')" class="activity-btn">Dinner Date 🍝</button>
+        <button onclick="selectActivity('Movie Night 🎬')" class="activity-btn">Movie Night 🎬</button>
+        <button onclick="selectActivity('Walk in the Park 🌸')" class="activity-btn">Walk in the Park 🌸</button>
+        <button onclick="selectActivity('Stargazing 🌙')" class="activity-btn">Stargazing 🌙</button>
+        <button onclick="selectActivity('Coffee Time ☕')" class="activity-btn">Coffee Time ☕</button>
+      </div>
+
+      <p id="validationMessage" class="text-red-500 mt-2 hidden">Please fill everything 🥺</p>
+
+      <button onclick="scheduleDate()"
+        class="mt-6 bg-primary-pink hover:bg-pink-500 text-white font-semibold px-6 py-3 rounded-full shadow-lg transition-transform hover:scale-105">Confirm
+        💞</button>
+    </div>
+  </div>
 
   <script>
-    let currentPage = "proposal";
-    let selectedActivity = null;
-    const contentContainer = document.getElementById("content-container");
+    let selectedActivity = "";
 
-    const pageContent = {
-      proposal: {
-        title: "A Very Important Question ❤️",
-        message: `
-          <img src="images/niatbaik.png" alt="My good intention"
-            class="mx-auto max-h-52 object-contain mb-6 rounded-lg shadow-xl border-2 border-primary-pink" />
-          <h2 class="text-3xl md:text-4xl font-bold mb-8 text-primary-pink font-romantic">
-            Will you be my girlfriend?
-          </h2>
-        `,
-        buttons: `
-          <div class="relative w-full mx-auto h-40 flex items-center justify-center">
-            <button onclick="changePage('yes_schedule')"
-              class="px-10 py-4 text-white font-bold text-lg bg-romantic-red hover:bg-primary-pink rounded-full shadow-lg transform hover:scale-110">
-              Yes I do ❤️
-            </button>
-            <button id="noButton" onclick="changePage('no')"
-              class="absolute px-8 py-3 text-primary-pink font-bold text-base bg-white border-2 border-primary-pink hover:bg-secondary-pink shadow-lg top-1/2 left-1/4 -translate-y-1/2 -translate-x-1/2">
-              No 💔
-            </button>
-          </div>
-        `,
-      },
-
-      yes_schedule: {
-        title: "🎉 My Girlfriend Said Yes! 🎉",
-        message: `
-          <h2 class="text-3xl md:text-4xl font-romantic text-romantic-red animate-pulse">
-            This calls for a celebration!
-          </h2>
-          <p class="mt-4 text-lg md:text-xl text-gray-700">
-            Let's schedule our first date 🥰
-          </p>
-        `,
-        buttons: `
-          <div id="date-scheduler"
-            class="mt-8 w-full max-w-sm mx-auto p-4 border-4 border-primary-pink rounded-2xl shadow-xl bg-secondary-pink/20">
-            <div class="mb-4">
-              <label for="dateInput" class="block text-left text-lg font-semibold text-romantic-red">Date</label>
-              <input type="date" id="dateInput" required class="w-full p-3 border-2 border-primary-pink rounded-lg bg-white">
-            </div>
-            <div class="mb-4">
-              <label for="timeInput" class="block text-left text-lg font-semibold text-romantic-red">Time</label>
-              <input type="time" id="timeInput" required class="w-full p-3 border-2 border-primary-pink rounded-lg bg-white">
-            </div>
-            <div class="mb-4">
-              <label class="block text-left text-lg font-semibold text-romantic-red mb-3">Activity</label>
-              <div id="activitySelector" class="flex justify-around space-x-2">
-                <button data-activity="Pizza" class="activity-btn p-3 rounded-xl border-2 border-gray-300 bg-white">🍕<br><span class="text-xs">Pizza</span></button>
-                <button data-activity="Adventure" class="activity-btn p-3 rounded-xl border-2 border-gray-300 bg-white">✈️<br><span class="text-xs">Adventure</span></button>
-                <button data-activity="Movie" class="activity-btn p-3 rounded-xl border-2 border-gray-300 bg-white">🎬<br><span class="text-xs">Movie</span></button>
-              </div>
-              <p id="validationMessage" class="mt-3 text-sm text-red-600 hidden">Please fill all fields!</p>
-            </div>
-            <button onclick="scheduleDate()" id="scheduleBtn"
-              class="w-full px-10 py-3 text-white font-bold text-lg bg-romantic-red rounded-full shadow-lg hover:bg-primary-pink">
-              Confirm 💞
-            </button>
-          </div>
-        `,
-      },
-
-      no: {
-        title: "💔 Are You Sure?",
-        message: `<p class="text-lg text-gray-700">Ouch... wanna rethink that? 😢</p>`,
-        buttons: `
-          <button onclick="changePage('proposal')" class="mt-6 px-10 py-4 text-white font-bold bg-romantic-red rounded-full hover:bg-primary-pink">
-            Give Me Another Chance 💌
-          </button>
-        `,
-      },
-    };
-
-    // 🩷 Fungsi ganti halaman
-    function changePage(page) {
-      const old = contentContainer;
-      old.classList.add("fade-enter");
-      setTimeout(() => {
-        currentPage = page;
-        renderPage();
-        old.classList.remove("fade-enter");
-        old.classList.add("fade-active");
-      }, 100);
+    function showAcceptScreen() {
+      document.getElementById("questionScreen").classList.add("hidden");
+      document.getElementById("acceptScreen").classList.remove("hidden");
     }
 
-    // 🩷 Render halaman sesuai currentPage
-    function renderPage() {
-      const data = pageContent[currentPage];
-      contentContainer.innerHTML = `
-        <h1 class="text-4xl font-bold mb-6 text-romantic-red font-romantic">${data.title}</h1>
-        <div class="mb-10">${data.message}</div>
-        <div>${data.buttons}</div>
-      `;
-      if (currentPage === "proposal") {
-        const noButton = document.getElementById("noButton");
-        noButton.addEventListener("mouseover", moveNoButton);
-      } else if (currentPage === "yes_schedule") setupDateListeners();
-    }
-
-    function moveNoButton() {
-      const btn = document.getElementById("noButton");
-      btn.style.top = `${Math.random() * 70 + 10}%`;
-      btn.style.left = `${Math.random() * 70 + 10}%`;
-    }
-
-    function setupDateListeners() {
-      document.querySelectorAll(".activity-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-          document.querySelectorAll(".activity-btn").forEach(b => b.classList.remove("border-4", "border-romantic-red"));
-          btn.classList.add("border-4", "border-romantic-red");
-          selectedActivity = btn.dataset.activity;
-        });
-      });
+    function selectActivity(activity) {
+      selectedActivity = activity;
+      document.querySelectorAll(".activity-btn").forEach(btn => btn.classList.remove("bg-pink-500", "text-white"));
+      event.target.classList.add("bg-pink-500", "text-white");
     }
 
     async function scheduleDate() {
@@ -200,20 +88,49 @@
         return;
       }
 
-      const res = await fetch("/api/saveDate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ date, time, activity: selectedActivity }),
-      });
+      validation.classList.add("hidden");
 
-      if (res.ok) {
-        alert(`Saved 💕\n${selectedActivity} on ${date} at ${time}`);
-      } else {
-        alert("❌ Gagal menyimpan, coba lagi ya.");
+      try {
+        const res = await fetch("/api/saveDate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            date,
+            time,
+            activity: selectedActivity,
+            createdAt: new Date().toISOString(),
+          }),
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          alert(`Saved 💕\n${selectedActivity} on ${date} at ${time}`);
+          localStorage.setItem("lastBlobURL", data.url);
+          window.location.href = "check.html";
+        } else {
+          alert("❌ Gagal menyimpan, coba lagi ya.");
+        }
+      } catch (err) {
+        alert("⚠️ Terjadi kesalahan jaringan.");
       }
     }
-
-    window.onload = renderPage;
   </script>
+
+  <style>
+    .activity-btn {
+      background-color: #ffe4ec;
+      border-radius: 9999px;
+      padding: 0.5rem 1rem;
+      font-weight: 500;
+      color: #d63384;
+      transition: all 0.2s;
+    }
+
+    .activity-btn:hover {
+      background-color: #ffb6c1;
+      transform: scale(1.05);
+    }
+  </style>
 </body>
+
 </html>
