@@ -1,14 +1,29 @@
-import fs from "fs";
-import path from "path";
+import { list } from "@vercel/blob";
 
-export default async function handler(req, res) {
-  const filePath = path.join(process.cwd(), "data.json");
+export const config = { runtime: "edge" };
 
+export default async function handler() {
   try {
-    const file = fs.readFileSync(filePath, "utf8");
-    const data = JSON.parse(file);
-    res.status(200).json(data);
-  } catch {
-    res.status(200).json([]);
+    // Cek apakah ada file data.json di blob
+    const existing = await list();
+    const file = existing.blobs.find((b) => b.pathname === "data.json");
+
+    if (!file) {
+      return new Response(JSON.stringify([]), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    // Ambil isinya
+    const res = await fetch(file.url);
+    const data = await res.json();
+
+    return new Response(JSON.stringify(data), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (err) {
+    return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" } });
   }
 }

@@ -1,28 +1,58 @@
-import fs from "fs";
-import path from "path";
+import { put, list } from "@vercel/blob";
 
-export default async function handler(req, res) {
-  const filePath = path.join(process.cwd(), "data.json");
+export const config = { runtime: "edge" };
 
+export default async function handler(req) {
   if (req.method === "POST") {
-    const { date, time, activity } = req.body;
-    if (!date || !time || !activity) {
-      return res.status(400).json({ error: "Data tidak lengkap" });
-    }
-
-    let data = [];
     try {
-      const file = fs.readFileSync(filePath, "utf8");
-      data = JSON.parse(file);
-    } catch (e) {
-      data = [];
+      const { date, time, activity } = await req.json();
+
+      if (!date || !time || !activity) {
+        return new Response(JSON.stringify({ error: "Data tidak lengkap" }), { status: 400 });
+      }
+
+      // Ambil semua data lama dari blob (jika ada)
+      const existing = await list();
+      let oldData = [];
+
+      const file = existing.blobs.find((b) => b.pathname === "data.json");
+      if (file) {
+        const res = await fetch(file.url);
+        oldData = await res.json();
+      }
+
+      // Tambah data baru
+      const newData = [...oldData, { date, time, activity, createdAt: new Date().toISOString() }];
+
+      // Simpan lagi ke blob
+      await put("data.json", JSON.stringify(newData, null, 2), {
+        access: "public",
+        contentType: "application/json",
+        token: process.env.BLOB_READ_WRITE_TOKEN,
+      });
+
+      return new Response(JSON.stringify({ success: true }), { status: 200 });
+    } catch (err) {
+      return new Response(JSON.stringify({ error: err.message }), { status: 500 });
     }
-
-    data.push({ date, time, activity, createdAt: new Date().toISOString() });
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-
-    return res.status(200).json({ success: true });
   }
 
-  res.status(405).json({ error: "Method tidak diizinkan" });
+  if (req.method === "GET") {
+    try {
+      const existing = await list();
+      const file = existing.blobs.find((b) => b.pathname === "data.json");
+
+      if (!file) {
+        return new Response(JSON.stringify([]), { status: 200 });
+      }
+
+      const res = await fetch(file.url);
+      const data = await res.json();
+      return new Response(JSON.stringify(data), { status: 200 });
+    } catch (err) {
+      return new Response(JSON.stringify({ error: err.message }), { status: 500 });
+    }
+  }
+
+  return new Response(JSON.stringify({ error: "Method tidak diizinkan" }), { status: 405 });
 }
