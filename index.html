@@ -4,36 +4,58 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>A Very Important Question</title>
+  <title>A Very Important Question 💌</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            "primary-pink": "#FF69B4", // Hot Pink
-            "secondary-pink": "#FFC0CB", // Light Pink
-            "romantic-red": "#E91E63", // Deep Rose
-            "light-bg": "#FFF5EE", // Seashell white background
-          },
-          fontFamily: {
-            sans: ["Inter", "sans-serif"],
-            romantic: ['"Great Vibes"', "cursive"],
+            "primary-pink": "#FF69B4",
+            "soft-pink": "#FFD1DC",
           },
         },
       },
     };
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Great+Vibes&display=swap"
-    rel="stylesheet" />
-  <style>
-    /* Custom styles for the heart trail animation */
-    body {
-      /* Custom cursor using a heart SVG */
-      cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="%23FF69B4" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>') 15 15,
-        auto;
-      min-height: 100vh;
-    }
+</head>
+
+<body class="flex items-center justify-center min-h-screen bg-gradient-to-b from-soft-pink to-primary-pink">
+  <div class="bg-white/80 backdrop-blur-lg p-8 rounded-2xl shadow-2xl text-center max-w-md">
+    <h1 class="text-3xl font-bold text-pink-600 mb-4">A Very Important Question 💖</h1>
+    <p class="text-gray-700 mb-6">Do you love me too?</p>
+
+    <div class="flex justify-center gap-4">
+      <button id="yesBtn" class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg">
+        Yes 💘
+      </button>
+      <button id="closeBtn" class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-lg">
+        Close this love note 💌
+      </button>
+    </div>
+
+    <p id="message" class="text-lg text-pink-700 mt-6 hidden"></p>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const yesBtn = document.getElementById("yesBtn");
+      const closeBtn = document.getElementById("closeBtn");
+      const message = document.getElementById("message");
+
+      yesBtn.addEventListener("click", () => {
+        message.textContent = "Yay! I knew it 😍💖";
+        message.classList.remove("hidden");
+      });
+
+      closeBtn.addEventListener("click", () => {
+        alert("I love you ❤️");
+      });
+    });
+  </script>
+</body>
+
+</html>
 
     .heart-trail {
       position: absolute;
@@ -421,3 +443,4 @@
 </body>
 
 </html>
+
