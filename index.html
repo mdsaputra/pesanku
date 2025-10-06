@@ -6,34 +6,69 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>A Very Important Question 💌</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            "primary-pink": "#FF69B4",
-            "soft-pink": "#FFD1DC",
-          },
-        },
-      },
-    };
-  </script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #ffb6c1, #ff69b4);
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(10px);
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      max-width: 360px;
+      width: 90%;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    button {
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+  </style>
 </head>
 
-<body class="flex items-center justify-center min-h-screen bg-gradient-to-b from-soft-pink to-primary-pink">
-  <div class="bg-white/80 backdrop-blur-lg p-8 rounded-2xl shadow-2xl text-center max-w-md">
+<body class="flex items-center justify-center min-h-screen">
+  <div class="card">
     <h1 class="text-3xl font-bold text-pink-600 mb-4">A Very Important Question 💖</h1>
     <p class="text-gray-700 mb-6">Do you love me too?</p>
 
-    <div class="flex justify-center gap-4">
-      <button id="yesBtn" class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg">
+    <div class="flex justify-center gap-4 mb-4">
+      <button id="yesBtn" class="bg-pink-500 hover:bg-pink-600 text-white px-5 py-2 rounded-lg">
         Yes 💘
       </button>
-      <button id="closeBtn" class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-lg">
-        Close this love note 💌
+      <button id="closeBtn" class="bg-gray-400 hover:bg-gray-500 text-white px-5 py-2 rounded-lg">
+        Close 💌
       </button>
     </div>
 
+    <p id="message" class="text-lg text-pink-700 font-medium hidden"></p>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const yesBtn = document.getElementById("yesBtn");
+      const closeBtn = document.getElementById("closeBtn");
+      const message = document.getElementById("message");
+
+      yesBtn.addEventListener("click", () => {
+        message.textContent = "Yay! I knew it 😍💖";
+        message.classList.remove("hidden");
+      });
+
+      closeBtn.addEventListener("click", () => {
+        alert("I love you ❤️");
+      });
+    });
+  </script>
+</body>
+
+</html>
     <p id="message" class="text-lg text-pink-700 mt-6 hidden"></p>
   </div>
 
@@ -443,4 +478,5 @@
 </body>
 
 </html>
+
 
