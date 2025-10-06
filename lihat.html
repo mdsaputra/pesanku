@@ -1,84 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Data Love Notes 💌</title>
+  <title>Lihat Jadwal Kencan 💘</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            "primary-pink": "#FF69B4",
-            "romantic-red": "#E91E63",
-            "light-bg": "#FFF5EE",
-          },
-          fontFamily: {
-            romantic: ['"Great Vibes"', "cursive"],
-          },
-        },
-      },
-    };
-  </script>
 </head>
-<body class="bg-light-bg min-h-screen flex flex-col items-center justify-center p-6">
-  <div class="w-full max-w-2xl bg-white rounded-3xl shadow-2xl p-6 border-4 border-primary-pink">
-    <h1 class="text-4xl font-romantic text-romantic-red text-center mb-8">💞 Our Love Schedule 💞</h1>
-
-    <div id="loading" class="text-center text-gray-500">Loading data...</div>
-    <div id="dataContainer" class="hidden">
-      <table class="w-full border-collapse">
-        <thead>
-          <tr class="bg-primary-pink text-white text-lg">
-            <th class="p-3 border">Date</th>
-            <th class="p-3 border">Time</th>
-            <th class="p-3 border">Activity</th>
-            <th class="p-3 border">Submitted At</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody" class="text-center text-gray-800 bg-pink-50"></tbody>
-      </table>
-    </div>
-
-    <div class="mt-8 text-center">
-      <a href="index.html" class="inline-block px-6 py-3 bg-romantic-red text-white font-bold rounded-full hover:bg-primary-pink transition">← Back to Home</a>
-    </div>
+<body class="bg-pink-50 min-h-screen flex flex-col items-center justify-center">
+  <div class="bg-white p-8 rounded-3xl shadow-lg w-96">
+    <h1 class="text-2xl font-bold text-pink-500 text-center mb-6">💖 Jadwal Kencan Tersimpan 💖</h1>
+    <div id="list" class="space-y-4 text-center"></div>
   </div>
 
   <script>
-    async function fetchData() {
-      try {
-        const res = await fetch("/api/saveDate");
-        const data = await res.json();
-        const container = document.getElementById("dataContainer");
-        const tableBody = document.getElementById("tableBody");
-        const loading = document.getElementById("loading");
+    async function loadDates() {
+      const res = await fetch("/api/getDates");
+      const data = await res.json();
+      const list = document.getElementById("list");
 
-        if (!data || data.length === 0) {
-          loading.textContent = "💔 No data yet...";
-          return;
-        }
-
-        loading.classList.add("hidden");
-        container.classList.remove("hidden");
-
-        data.reverse().forEach(item => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td class="border p-3">${item.date}</td>
-            <td class="border p-3">${item.time}</td>
-            <td class="border p-3 font-bold text-romantic-red">${item.activity}</td>
-            <td class="border p-3 text-sm">${new Date(item.timeStamp).toLocaleString()}</td>
-          `;
-          tableBody.appendChild(tr);
-        });
-      } catch (err) {
-        document.getElementById("loading").textContent = "❌ Failed to load data.";
+      if (data.length === 0) {
+        list.innerHTML = "<p class='text-gray-500'>Belum ada jadwal tersimpan 🕊️</p>";
+        return;
       }
+
+      list.innerHTML = data.map(
+        (item, i) => `
+          <div class="p-4 bg-pink-100 rounded-xl shadow">
+            <p><b>${i + 1}.</b> ${item.activity}</p>
+            <p>${item.date} — ${item.time}</p>
+            <p class="text-sm text-gray-500">${new Date(item.createdAt).toLocaleString()}</p>
+          </div>
+        `
+      ).join("");
     }
 
-    fetchData();
+    loadDates();
   </script>
 </body>
 </html>
