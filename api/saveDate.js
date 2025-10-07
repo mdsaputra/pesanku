@@ -2,13 +2,13 @@ import { put, list } from "@vercel/blob";
 
 export const config = { runtime: "nodejs" };
 
-export default async function handler(req) {
+export default async function handler(req, res) {
   if (req.method === "POST") {
     try {
-      const { date, time, activity } = await req.json();
+      const { date, time, activity } = req.body;
 
       if (!date || !time || !activity) {
-        return new Response(JSON.stringify({ error: "Data tidak lengkap" }), { status: 400 });
+        return res.status(400).json({ error: "Data tidak lengkap" });
       }
 
       // Ambil semua data lama dari blob (jika ada)
@@ -17,8 +17,8 @@ export default async function handler(req) {
 
       const file = existing.blobs.find((b) => b.pathname === "data.json");
       if (file) {
-        const res = await fetch(file.url);
-        oldData = await res.json();
+        const response = await fetch(file.url);
+        oldData = await response.json();
       }
 
       // Tambah data baru
@@ -31,9 +31,9 @@ export default async function handler(req) {
         token: process.env.BLOB_READ_WRITE_TOKEN,
       });
 
-      return new Response(JSON.stringify({ success: true }), { status: 200 });
+      return res.status(200).json({ success: true });
     } catch (err) {
-      return new Response(JSON.stringify({ error: err.message }), { status: 500 });
+      return res.status(500).json({ error: err.message });
     }
   }
 
@@ -43,16 +43,16 @@ export default async function handler(req) {
       const file = existing.blobs.find((b) => b.pathname === "data.json");
 
       if (!file) {
-        return new Response(JSON.stringify([]), { status: 200 });
+        return res.status(200).json([]);
       }
 
-      const res = await fetch(file.url);
-      const data = await res.json();
-      return new Response(JSON.stringify(data), { status: 200 });
+      const response = await fetch(file.url);
+      const data = await response.json();
+      return res.status(200).json(data);
     } catch (err) {
-      return new Response(JSON.stringify({ error: err.message }), { status: 500 });
+      return res.status(500).json({ error: err.message });
     }
   }
 
-  return new Response(JSON.stringify({ error: "Method tidak diizinkan" }), { status: 405 });
+  return res.status(405).json({ error: "Method tidak diizinkan" });
 }
