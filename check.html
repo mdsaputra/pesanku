@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Date Confirmation</title>
+</head>
+<body>
+  <h1>Terima kasih! 💖</h1>
+  <div id="dateInfo">Loading...</div>
+  <script>
+    fetch('/api/saveDate')
+      .then(res => res.json())
+      .then(data => {
+        if (!Array.isArray(data) || data.length === 0) {
+          document.getElementById('dateInfo').textContent = 'Belum ada jadwal date.';
+        } else {
+          const last = data[data.length - 1];
+          document.getElementById('dateInfo').innerHTML = `
+            <p>Jadwal date kamu:</p>
+            <ul>
+              <li><b>Aktivitas:</b> ${last.activity}</li>
+              <li><b>Tanggal:</b> ${last.date}</li>
+              <li><b>Jam:</b> ${last.time}</li>
+            </ul>
+          `;
+        }
+      })
+      .catch(() => {
+        document.getElementById('dateInfo').textContent = 'Gagal mengambil data.';
+      });
+  </script>
+</body>
+</html>
