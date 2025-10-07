@@ -106,7 +106,7 @@
         if (data.success) {
           alert(`Saved 💕\n${selectedActivity} on ${date} at ${time}`);
           localStorage.setItem("lastBlobURL", data.url);
-          window.location.href = "check.html";
+          // window.location.href = "check.html"; // Hapus atau komentar baris ini
         } else {
           alert("❌ Gagal menyimpan, coba lagi ya.");
         }
