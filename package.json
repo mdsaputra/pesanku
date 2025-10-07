@@ -1,0 +1,10 @@
+{
+  "name": "pesanku-main",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@vercel/blob": "^1.7.1",
+    "nanoid": "^5.0.2"
+  }
+}
