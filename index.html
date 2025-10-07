@@ -72,7 +72,7 @@
       document.getElementById("acceptScreen").classList.remove("hidden");
     }
 
-    function selectActivity(activity) {
+    function selectActivity(activity, event) {
       selectedActivity = activity;
       document.querySelectorAll(".activity-btn").forEach(btn => btn.classList.remove("bg-pink-500", "text-white"));
       event.target.classList.add("bg-pink-500", "text-white");
