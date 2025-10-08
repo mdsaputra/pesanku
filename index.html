@@ -22,6 +22,12 @@
 
 <body class="bg-gradient-to-br from-soft-pink to-pink-200 flex flex-col justify-center items-center h-screen">
 
+  <!-- 🎶 Background Music -->
+  <audio id="bgMusic" autoplay loop>
+    <source src="song.mp3" type="audio/mpeg">
+  </audio>
+
+
   <!-- Step 1 -->
   <div id="questionScreen" class="text-center transition-all">
     <h1 class="text-4xl font-bold text-primary-pink mb-6 animate-bounce">Will you be my girlfriend? 💕</h1>
@@ -67,6 +73,13 @@
   <script>
     let selectedActivity = "";
 
+    // 🔊 Play music when user first interacts (karena autoplay diblokir browser)
+    document.body.addEventListener("click", function startMusic() {
+      const music = document.getElementById("bgMusic");
+      music.play().catch(() => console.log("User interaction required"));
+      document.body.removeEventListener("click", startMusic);
+    });
+
     function showAcceptScreen() {
       document.getElementById("questionScreen").classList.add("hidden");
       document.getElementById("acceptScreen").classList.remove("hidden");
@@ -106,7 +119,6 @@
         if (data.success) {
           alert(`Saved 💕\n${selectedActivity} on ${date} at ${time}`);
           localStorage.setItem("lastBlobURL", data.url);
-          // window.location.href = "check.html"; // Hapus atau komentar baris ini
         } else {
           alert("❌ Gagal menyimpan, coba lagi ya.");
         }
